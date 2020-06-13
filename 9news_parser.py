@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from bs4 import BeautifulSoup
 
 # File imports.
@@ -16,16 +15,20 @@ class NineNewsParser(Parser):
         :param soup: HTML file in soup format.
         :return: Dictionary representing the news to be placed into the database.
         """
+        info: dict = {}
         soup_content: BeautifulSoup = soup.find('div', {"class": "feed__stories"})
-        content_list: list = soup.find_all('article')
+        content_list: list = soup_content.find_all('article')
 
         for article in content_list:
-            # print(str(article))
-            print(article.find("span", {"class": "story__headline__text"}).string + "\n")
-            if article.find("div", {"class": "story__abstract"}):
-                print("Details: " + article.find("div", {"class": "story__abstract"}).string)
-            if article.find("a").has_attr('href'):
-                print(article.find("a")["href"])
-            print("-" * 5)
+            # Adding title.
+            info["title"] = article.find("span", {"class": "story__headline__text"}).string
 
-        return {}
+            # Adding abstract.
+            if article.find("div", {"class": "story__abstract"}):
+                info["details"]: article.find("div", {"class": "story__abstract"}).string
+
+            # Link.
+            if article.find("a").has_attr('href'):
+                info["link"] = article.find("a")["href"]
+
+        return info
