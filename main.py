@@ -15,7 +15,19 @@ def extract_html(url: str) -> BeautifulSoup:
     soup: BeautifulSoup = BeautifulSoup(response.text, "html.parser")
     # print(soup.prettify())
 
-    print(soup.find('div', {"class": "feed__stories"}).prettify())
+    soup_content: BeautifulSoup = soup.find('div', {"class": "feed__stories"})
+    content_list: list = soup_content.find_all('article')
+
+    for article in content_list:
+        # print(str(article))
+        print(article.find("span", {"class": "story__headline__text"}).string + "\n")
+        if article.find("div", {"class": "story__abstract"}):
+            print("Details: " + article.find("div", {"class": "story__abstract"}).string)
+        if article.find("a").has_attr('href'):
+            print(article.find("a")["href"])
+        print("-" * 5)
+
+
     return soup
 
 def main():
