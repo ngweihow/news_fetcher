@@ -1,4 +1,4 @@
-#News Fetcher
+# News Fetcher
 
 Command Line tool for fetching live updates of newest information from news sites.
 
