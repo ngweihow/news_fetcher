@@ -32,3 +32,15 @@ class NineNewsParser(Parser):
                 info["link"] = article.find("a")["href"]
 
         return info
+
+    def get_last_updated(self, soup: BeautifulSoup) -> str:
+        """
+        Retrieve last update of site.
+        :param soup: HTML file in soup format.
+        :return: String title of the latest article for finding out last update.
+        """
+        content_list: list = soup.find_all('article')
+        if len(content_list) > 0:
+            return content_list[0].find("span", {"class": "story__headline__text"}).string
+        else:
+            return ""

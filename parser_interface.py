@@ -16,3 +16,12 @@ class Parser:
         :return: Dictionary representing the news to be placed into the database.
         """
         return {}
+
+    @abstractmethod
+    def get_last_updated(self, soup: BeautifulSoup) -> str:
+        """
+        Retrieve last update of site.
+        :param soup: HTML file in soup format.
+        :return: String title of the latest article for finding out last update.
+        """
+        return ""
