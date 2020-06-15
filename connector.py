@@ -28,6 +28,7 @@ class Connector:
             record = cursor.fetchone()
             print("You are connected to - ", record, "\n")
 
+            connection.commit()
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
@@ -37,7 +38,7 @@ class Connector:
             sys.exit(0)
 
     @staticmethod
-    def initialise_db(self) -> None:
+    def initialise_db() -> None:
         """
         Initialise the database Schema and add Tables.
         :return: None
@@ -55,7 +56,7 @@ class Connector:
             cursor.execute("CREATE SCHEMA IF NOT EXISTS news_sites;")
             # Create Sites table.
             cursor.execute("CREATE TABLE IF NOT EXISTS news_sites.sites ("
-                           "id             SERIAL PRIMARY KEY"
+                           "id             SERIAL PRIMARY KEY,"
                            "url            TEXT,"
                            "last_update    TEXT"
                            ");")
@@ -65,9 +66,9 @@ class Connector:
                            "title   TEXT,"
                            "details TEXT,"
                            "url     TEXT,"
-                           "site_id SERIAL,"
-                           "FOREIGN KEY (sites) REFERENCES news_sites.sites (id)"
+                           "site_id int REFERENCES news_sites.sites (id)"
                            ");")
+            connection.commit()
             cursor.close()
             connection.close()
             print("Database Successfully initiated.")
@@ -94,15 +95,13 @@ class Connector:
 
             cursor = connection.cursor()
             # Adding the article contents.
-            cursor.execute("WITH linked_site_id AS ("
-                           "SELECT id FROM news_sites.sites WHERE url = '%s'"
-                           ")"
-                           "INSERT INTO news_sites.articles (title,details ,url, site_id )"
+            cursor.execute("INSERT INTO news_sites.articles (title,details ,url, site_id )"
                            "values ("
-                           "'%s', '%s', '%s', (SELECT linked_site_id.id FROM linked_site_id)"
+                           "'%s', '%s', '%s', (SELECT id FROM linked_site_id WHERE url = '%s')"
                            ");",
-                           site_url, article["title"], article["details"], article["link"])
+                           article["title"], article["details"], article["link"]), site_url
 
+            connection.commit()
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
@@ -133,6 +132,7 @@ class Connector:
             cursor.execute("INSERT INTO news_sites.sites (last_update, url)"
                            "values ('%s', '%s')", "", site_url)
 
+            connection.commit()
             cursor.close()
             connection.close()
             print("Inserted " + site_url)
@@ -142,3 +142,42 @@ class Connector:
             return False
 
         return True
+
+    @staticmethod
+    def has_article(last_update: str, site_url: str) -> bool:
+        """
+        Check whether or not an article exists already in the database, hence determining if site has updated.
+        :param last_update: Article Title to be checked.
+        :param site_url: The news site's URL.
+        :return: Boolean indicating if it is updated.
+        True if the database already contains it.
+        False if it is a new article.
+        """
+        updated: bool = False
+
+        try:
+            connection = psycopg2.connect(
+                host="localhost",
+                database="postgres",
+                user="postgres",
+                password="password",
+            )
+
+            cursor = connection.cursor()
+
+            cursor.execute("SELECT EXISTS ("
+                           "SELECT true FROM news_sites.sites WHERE url='%s' and last_update='%s'"
+                           ");",
+                           site_url, last_update)
+
+            updated = cursor.fetchall()
+            connection.commit()
+
+            cursor.close()
+            connection.close()
+            print("Checked " + site_url + " for " + last_update)
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error inserting site", error)
+
+        return updated

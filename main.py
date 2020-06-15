@@ -25,6 +25,9 @@ def extract_html(url: str) -> BeautifulSoup:
 
     return soup
 
+# def init_db() -> None:
+
+
 
 def main():
     print("Hello World!")
