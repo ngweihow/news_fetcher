@@ -130,7 +130,7 @@ class Connector:
             cursor = connection.cursor()
 
             cursor.execute("INSERT INTO news_sites.sites (last_update, url)"
-                           "values (%s, '%s)", ("", site_url))
+                           "values (%s, %s)", ("", site_url))
 
             connection.commit()
             cursor.close()
@@ -170,7 +170,7 @@ class Connector:
                            ");",
                            (site_url, last_update))
 
-            updated = cursor.fetchall()
+            updated = cursor.fetchall()[0][0]
             connection.commit()
 
             cursor.close()
@@ -181,3 +181,33 @@ class Connector:
             print("Error checking site", error)
 
         return updated
+
+    @staticmethod
+    def update_latest(site_url: str, latest: str) -> None:
+        """
+        Update the site with the latest article.
+        :param site_url: The news site's URL.
+        :param latest: Latest article of the site.
+        :return:
+        """
+        try:
+            connection = psycopg2.connect(
+                host="localhost",
+                database="postgres",
+                user="postgres",
+                password="password",
+            )
+
+            cursor = connection.cursor()
+
+            cursor.execute("UPDATE news_sites.sites "
+                           "SET last_update=%s"
+                           "WHERE url=%s;", (latest, site_url))
+
+            connection.commit()
+            cursor.close()
+            connection.close()
+            print("Updated " + site_url + " with " + latest)
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error updating latest in site", error)
