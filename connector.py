@@ -97,9 +97,9 @@ class Connector:
             # Adding the article contents.
             cursor.execute("INSERT INTO news_sites.articles (title,details ,url, site_id )"
                            "values ("
-                           "'%s', '%s', '%s', (SELECT id FROM linked_site_id WHERE url = '%s')"
+                           "%s, %s, %s, (SELECT id FROM linked_site_id WHERE url = %s)"
                            ");",
-                           article["title"], article["details"], article["link"]), site_url
+                           (article["title"], article["details"], article["link"]), site_url)
 
             connection.commit()
             cursor.close()
@@ -130,7 +130,7 @@ class Connector:
             cursor = connection.cursor()
 
             cursor.execute("INSERT INTO news_sites.sites (last_update, url)"
-                           "values ('%s', '%s')", "", site_url)
+                           "values (%s, '%s)", ("", site_url))
 
             connection.commit()
             cursor.close()
@@ -166,9 +166,9 @@ class Connector:
             cursor = connection.cursor()
 
             cursor.execute("SELECT EXISTS ("
-                           "SELECT true FROM news_sites.sites WHERE url='%s' and last_update='%s'"
+                           "SELECT true FROM news_sites.sites WHERE url=%s and last_update=%s"
                            ");",
-                           site_url, last_update)
+                           (site_url, last_update))
 
             updated = cursor.fetchall()
             connection.commit()
@@ -178,6 +178,6 @@ class Connector:
             print("Checked " + site_url + " for " + last_update)
 
         except (Exception, psycopg2.Error) as error:
-            print("Error inserting site", error)
+            print("Error checking site", error)
 
         return updated

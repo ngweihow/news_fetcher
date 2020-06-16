@@ -32,9 +32,9 @@ def extract_html(url: str) -> BeautifulSoup:
 def main():
     print("Hello World!")
     extract_html(URL)
-    connector: Connector = Connector()
-    connector.test_db()
-    connector.initialise_db()
+    Connector.test_db()
+    Connector.initialise_db()
+    print(Connector.has_article("abc", "google.com"))
 
 
 if __name__ == "__main__":
