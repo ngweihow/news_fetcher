@@ -97,9 +97,9 @@ class Connector:
             # Adding the article contents.
             cursor.execute("INSERT INTO news_sites.articles (title,details ,url, site_id )"
                            "values ("
-                           "%s, %s, %s, (SELECT id FROM linked_site_id WHERE url = %s)"
+                           "%s, %s, %s, (SELECT id FROM news_sites.sites WHERE url = %s)"
                            ");",
-                           (article["title"], article["details"], article["link"]), site_url)
+                           (article["title"], article["details"], article["link"], site_url))
 
             connection.commit()
             cursor.close()

@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from bs4 import BeautifulSoup
+from typing import List
 
 
 class Parser:
@@ -9,13 +10,13 @@ class Parser:
     """
 
     @abstractmethod
-    def parse_html(self, soup: BeautifulSoup) -> dict:
+    def parse_html(self, soup: BeautifulSoup) -> List[dict]:
         """
         Parsing the HTML received to a dictionary format, suitable for storing in the database.
         :param soup: HTML file in soup format.
-        :return: Dictionary representing the news to be placed into the database.
+        :return: List of dictionaries representing the articles to be placed into the database.
         """
-        return {}
+        return []
 
     @abstractmethod
     def get_last_updated(self, soup: BeautifulSoup) -> str:
