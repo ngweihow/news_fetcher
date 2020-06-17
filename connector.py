@@ -71,7 +71,7 @@ class Connector:
             connection.commit()
             cursor.close()
             connection.close()
-            print("Database Successfully initiated.")
+            print("Database Successfully initiated.\n")
 
         except (Exception, psycopg2.Error) as error:
             print("Error while connecting to PostgreSQL", error)
@@ -104,7 +104,6 @@ class Connector:
             connection.commit()
             cursor.close()
             connection.close()
-            print("PostgreSQL connection is closed")
 
         except (Exception, psycopg2.Error) as error:
             print("Error inserting article", error)
@@ -135,7 +134,6 @@ class Connector:
             connection.commit()
             cursor.close()
             connection.close()
-            print("Inserted " + site_url)
 
         except (Exception, psycopg2.Error) as error:
             print("Error inserting site", error)
@@ -175,7 +173,6 @@ class Connector:
 
             cursor.close()
             connection.close()
-            print("Checked " + site_url + " for " + last_update)
 
         except (Exception, psycopg2.Error) as error:
             print("Error checking site", error)
@@ -207,7 +204,6 @@ class Connector:
             connection.commit()
             cursor.close()
             connection.close()
-            print("Updated " + site_url + " with " + latest)
 
         except (Exception, psycopg2.Error) as error:
             print("Error updating latest in site", error)
