@@ -1,17 +1,15 @@
 from controller import Controller
+import config
 
-URL: str = "https://www.9news.com.au/just-in"
-INTERVAL: int = 60
-
-
-def get_config() -> None:
-    return
+"""
+Main Entry to application. Grabs config and initialises Controller. 
+"""
 
 
 def main():
     print("Starting News Fetcher...\n")
-    print("Listening on", URL, "\n")
-    controller: Controller = Controller(URL, INTERVAL)
+    print("Listening on", config.URL, "\n")
+    controller: Controller = Controller(config.URL, config.INTERVAL)
     controller.news_update()
 
 

@@ -23,9 +23,5 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(isinstance(parser, NineNewsParser))
 
 
-    def test_connector_insert_article(self):
-        site = Mock()
-
-
 if __name__ == '__main__':
     unittest.main()
